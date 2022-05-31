@@ -3,6 +3,7 @@
 * {
     font-size: 20px;
     font-family: Roboto, Helvetica, sans-serif;
+    color: white;
 }
 
 body {
@@ -12,10 +13,19 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+
+    background-color: darkgray;
 }
 
 h1 {
     font-size: 30px;
+}
+
+#calculator {
+
+    background-color: gray;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 #screen {
@@ -24,7 +34,7 @@ h1 {
     justify-content: end;
     box-sizing: border-box;
     padding: 10px;
-    border: 2px solid lightblue;
+    
     font-size: 30px;
     text-align: end;
     width: 200px;
@@ -32,6 +42,10 @@ h1 {
     overflow: hidden;
 
     font-size: 14px;
+
+    border: 3px solid lightblue;
+    border-radius: 5px;
+    background-color: darkgray;
 }
 
 #calc-body {
@@ -52,10 +66,15 @@ h1 {
 }
 
 button {
+    box-sizing: border-box;
     padding: 0;
     margin: 0;
     width: 50px;
     height: 50px;
+
+    background-color: darkgray;
+    border: 3px solid lightblue;
+    border-radius: 5px;
 }
 
 #clear {
