@@ -1,4 +1,8 @@
-let stack = [0];
+let stack = ['0'];
+
+let screenIsReplaceable = true;
+
+const maxDecimalPlaces = 15;
 
 const screen = document.getElementById('screen');
 screen.style.fontSize = '20px';
@@ -14,63 +18,79 @@ document.querySelectorAll('#operators > button').forEach((button) => {
 })
 
 document.getElementById('clear').addEventListener('click', clearScreen);
+document.getElementById('back-space').addEventListener('click', backSpace);
 
 setSize();
 
 function operate(stack) {
-    if (stack.length >= 3 && typeof stack[stack.length - 1] === 'number') {
-        let total = stack[0];
+    // If the stack has enough entries to operate and the last entry is a number
+    if (isValidStack(1)) {
+        let total = parseFloat(stack[0]);
         let operator = '';
         for (let i = 1; i < stack.length; i++) {
             if (i % 2 === 1) {
-                if (typeof stack[i] === 'string') {
+                if (Number.isNaN(parseFloat(stack[i]))) {
                     operator = stack[i];
                 } else {
-                    console.error("Expected string for operator but found number: " + stack[i]);
+                    console.error("Expected string for operator but parseFloat found a number: " + stack[i]);
                 }
             } else {
                 switch (operator) {
                     case '+':
-                        total += stack[i];
+                        total += parseFloat(stack[i]);
                         break;
                     case '-':
                     case '−':
-                        total -= stack[i];
+                        total -= parseFloat(stack[i]);
                         break;
                     case '*':
                     case '×':
-                        total *= stack[i];
+                        total *= parseFloat(stack[i]);
                         break;
                     case '/':
                     case '÷':
-                        total /= stack[i];
+                        total /= parseFloat(stack[i]);
                         break;
                     case '**':
-                        total **= stack[i];
+                        total **= parseFloat(stack[i]);
                         break;
                     default:
                 }
 
             }
         }
-        return total;
+        return Math.round((total + Number.EPSILON) * (10 ** maxDecimalPlaces)) / (10 ** maxDecimalPlaces);
     }
 }
 
 function numberClick(e) {
-    if (stack.length > 0 && typeof stack[stack.length - 1] === 'number') {
-        stack[stack.length - 1] = +(stack[stack.length - 1].toString() + e.target.id);
+    if (screenIsReplaceable) {
+        stack = e.target.id === '.' ? ['0.'] : [e.target.id];
+        screenIsReplaceable = false;
     } else {
-        stack.push(+e.target.id);
+        if (isValidStack(1)) {
+            if ((e.target.id !== '.' || !stack[stack.length - 1].includes('.'))) {
+                stack[stack.length - 1] = stack[stack.length - 1] + e.target.id;
+            }
+        } else {
+            if (e.target.id === '.') {
+                stack.push('0.');
+            } else {
+                stack.push(e.target.id);
+            }
+            
+        }
     }
+    
     updateScreen();
 }
 
 function operatorClick(e) {
+    screenIsReplaceable = false;
     if (e.target.id === 'equals') {
         calculate();
     } else {
-        if (stack.length > 0 && typeof stack[stack.length - 1] === 'number') {
+        if (isValidStack(1)) {
             stack.push(e.target.textContent);
             updateScreen();
         }
@@ -78,18 +98,35 @@ function operatorClick(e) {
 }
 
 function updateScreen() {
+    if (stack.length === 0) {
+        stack = ['0'];
+    }
     screen.textContent = stack.toString().replaceAll(',', ' ');
 }
 
 function clearScreen() {
     stack = [0];
+    screenIsReplaceable = true;
+    updateScreen();
+}
+
+function backSpace() {
+    if (stack.length > 0) {
+        if (stack[stack.length - 1].length > 1) {
+            stack[stack.length - 1] = stack[stack.length - 1].slice(0, -1);
+        } else {
+            stack = stack.slice(0, -1);
+        }
+    }
     updateScreen();
 }
 
 function calculate() {
-    if (stack.length >= 3 && typeof stack[stack.length - 1] === 'number')
-    stack = [operate(stack)];
-    updateScreen();
+    if (isValidStack(1)) {
+        stack = [operate(stack).toString()];
+        screenIsReplaceable = true;
+        updateScreen();
+    } 
 }
 
 function setSize(w=200, h = 0, g = 5, cg = 10) {
@@ -128,4 +165,8 @@ function setSize(w=200, h = 0, g = 5, cg = 10) {
         b.style.margin = `${gap}px`;
     })
     document.getElementById('clear').style.width = `${(squareW * 2) + (gap * 2)}px`;
+}
+
+function isValidStack(minValidSize) {
+    return stack.length >= minValidSize && (!Number.isNaN(parseFloat(stack[stack.length - 1])))
 }

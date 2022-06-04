@@ -4,10 +4,10 @@ Made for The Odin Project:
 https://www.theodinproject.com/lessons/foundations-calculator
 
 ## To Do:
-- make . button work
-- make <<< button work
+- fix leading zeroes
 - make +/- button work
 - fix rounding
-- update ui
+- hotkeys
+- better ui?
 
 - tests

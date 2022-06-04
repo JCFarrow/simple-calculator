@@ -14,7 +14,7 @@ body {
     height: 100vh;
     margin: 0;
 
-    background-color: darkgray;
+    background-color: #ececec;
 }
 
 h1 {
@@ -75,6 +75,11 @@ button {
     background-color: darkgray;
     border: 3px solid lightblue;
     border-radius: 5px;
+}
+
+button:disabled, button:active {
+    background-color: gray;
+    border-color: darkgray;
 }
 
 #clear {
